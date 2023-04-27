@@ -66,6 +66,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
         id: go
 
+      # TODO: Put this in the parent? does it share here for env variables?
       - name: Extract branch name
         shell: bash
         run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
@@ -77,7 +78,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ${{ steps.extract_branch.outputs.branch }}-contracts
-          path: ${{ steps.extract_branch.outputs.branch }}-contracts
+          path: artifacts
 
       - run: make ictest-basic
 
@@ -94,9 +95,15 @@ jobs:
       - name: checkout chain
         uses: actions/checkout@v3
 
+      # TODO: Put this in the parent? does it share here for env variables?
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        id: extract_branch
+
       - uses: actions/download-artifact@v3
         with:
           name: ${{ steps.extract_branch.outputs.branch }}-contracts
-          path: ${{ steps.extract_branch.outputs.branch }}-contracts
+          path: artifacts
 
       - run: make ictest-whitelist
