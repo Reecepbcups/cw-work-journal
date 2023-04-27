@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  e2e:
 
     runs-on: ubuntu-latest
     steps:
@@ -18,6 +18,28 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.19
+
+      - name: Install latest nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          override: true
+
+      - name: Rust Dependencies Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            artifacts/
+          key: ${{ runner.os }}-cargo-with-artifacts-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Build the artifact
+        run: make compile
       
       - name: Run e2e test
         run: make ictest-basic
