@@ -10,3 +10,7 @@ clippy:
 ictest-basic:	
 # compile it here then do:
 	cd test && go test -race -v -run TestContract .
+
+ictest-whitelist:	
+# compile it here then do:
+	cd test && go test -race -v -run TestWhitelist .

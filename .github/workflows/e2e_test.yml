@@ -41,5 +41,8 @@ jobs:
       - name: Build the artifact
         run: make compile
       
-      - name: Run e2e test
+      - name: Run basic
         run: make ictest-basic
+
+      - name: Run whitelist
+        run: make ictest-whitelist
