@@ -4,8 +4,12 @@ on: [push, pull_request]
 
 name: Lint
 
-jobs:
+# Cancel task if a new commit is pushed while old workflows run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
   lints:
     name: Lints
     runs-on: ubuntu-latest
