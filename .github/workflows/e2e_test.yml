@@ -13,6 +13,13 @@ env:
 jobs:
   e2e-setup:
     runs-on: ubuntu-latest
+
+    outputs:
+      branchTag: ${{ steps.meta.outputs.version }}
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       # Checkout
       - uses: actions/checkout@v3
@@ -44,7 +51,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3        
         with:
-          name: ${{ github.workflow }}-${{ github.ref }}-contracts
+          name: ${{needs.e2e-setup.outputs.branchTag}}-contracts
           retention-days: 1
           path: |
             artifacts
@@ -65,7 +72,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.workflow }}-${{ github.ref }}-contracts
+          name: ${{needs.e2e-setup.outputs.branchTag}}-contracts
           path: contracts
 
       - run: make ictest-basic
@@ -85,7 +92,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.workflow }}-${{ github.ref }}-contracts
+          name: ${{needs.e2e-setup.outputs.branchTag}}-contracts
           path: contracts
 
       - run: make ictest-whitelist
