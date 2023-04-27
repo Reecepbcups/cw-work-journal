@@ -7,7 +7,7 @@ use cw2::set_contract_version;
 
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::state::{State, DataEntries, DATA_STATE, STATE};
+use crate::state::{DataEntries, State, DATA_STATE, STATE};
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:journal";
@@ -47,8 +47,8 @@ pub fn execute(
 ) -> Result<Response, ContractError> {
     match msg {
         // Admin Only
-        ExecuteMsg::Whitelist { address } => {            
-            let mut state: State = STATE.load(deps.storage)?;        
+        ExecuteMsg::Whitelist { address } => {
+            let mut state: State = STATE.load(deps.storage)?;
             if !state.allowed_submitters.contains(&address) {
                 state.allowed_submitters.push(address);
             }
@@ -62,7 +62,7 @@ pub fn execute(
                 state.allowed_submitters.retain(|x| x != &address);
             }
 
-            STATE.save(deps.storage, &state)?;            
+            STATE.save(deps.storage, &state)?;
             Ok(Response::new().add_attribute("method", "remove"))
         }
 
@@ -76,14 +76,14 @@ pub fn execute(
                 return Err(ContractError::Unauthorized {});
             }
 
-            let mut data_state: DataEntries = DATA_STATE.load(deps.storage)?;        
+            let mut data_state: DataEntries = DATA_STATE.load(deps.storage)?;
             if !data_state.entries.contains_key(&sender) {
                 data_state.entries.insert(sender.clone(), BTreeMap::new());
             }
 
             // get latest id in the btree map. Change this in the future to be better
             let mut latest_id: u128 = 0;
-            for (key, _) in data_state.entries.get(&sender).unwrap() {
+            for key in data_state.entries.get(&sender).unwrap().keys() {
                 if *key > latest_id {
                     latest_id = *key;
                 }
@@ -92,9 +92,13 @@ pub fn execute(
             // add entries to the btree map
             for entry in entries {
                 latest_id += 1;
-                data_state.entries.get_mut(&sender).unwrap().insert(latest_id, entry);
+                data_state
+                    .entries
+                    .get_mut(&sender)
+                    .unwrap()
+                    .insert(latest_id, entry);
             }
-            
+
             DATA_STATE.save(deps.storage, &data_state)?;
 
             Ok(Response::new().add_attribute("method", "submit"))
@@ -103,7 +107,7 @@ pub fn execute(
 }
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
-    match msg {        
+    match msg {
         QueryMsg::GetEntries { address } => {
             let data_state: DataEntries = DATA_STATE.load(deps.storage)?;
             let entries = data_state.entries.get(&address).unwrap();
@@ -118,7 +122,7 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
             to_binary(&entry)
         }
 
-        QueryMsg::GetWhitelist {  } => {
+        QueryMsg::GetWhitelist {} => {
             let state: State = STATE.load(deps.storage)?;
             let whitelist = state.allowed_submitters;
 

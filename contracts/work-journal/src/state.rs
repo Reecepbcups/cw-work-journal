@@ -7,19 +7,16 @@ use crate::msg::JournalEntry;
 
 #[cw_serde]
 pub struct State {
-    pub manager: String,    
-    pub allowed_submitters: Vec<String>,    
+    pub manager: String,
+    pub allowed_submitters: Vec<String>,
 }
 
 // move this
 
-
 #[cw_serde]
-pub struct DataEntries {    
-    pub entries: BTreeMap<String, BTreeMap<u128, JournalEntry>>, 
+pub struct DataEntries {
+    pub entries: BTreeMap<String, BTreeMap<u128, JournalEntry>>,
 }
-
-
 
 pub const STATE: Item<State> = Item::new("state");
 

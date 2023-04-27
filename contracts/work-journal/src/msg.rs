@@ -27,12 +27,9 @@ pub enum ExecuteMsg {
 
     // Users
     /// Submit a new entry into the journal.    
-    Submit {
-        entries: Vec<JournalEntry>,
-    },
-
+    Submit { entries: Vec<JournalEntry> },
     // remove entry by unique id
-    // modify entry by ID    
+    // modify entry by ID
 }
 
 #[cw_serde]
@@ -41,13 +38,10 @@ pub enum QueryMsg {
     #[returns(Vec<JournalEntry>)]
     GetEntries {
         address: String,
-        // range, use pagination here        
+        // range, use pagination here
     },
     #[returns(JournalEntry)]
-    GetSpecificEntry {
-        address: String,
-        id: u128,
-    },    
+    GetSpecificEntry { address: String, id: u128 },
     #[returns(Vec<String>)]
     GetWhitelist {},
 }
