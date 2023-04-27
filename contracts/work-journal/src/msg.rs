@@ -47,5 +47,7 @@ pub enum QueryMsg {
     GetSpecificEntry {
         address: String,
         id: u128,
-    },
+    },    
+    #[returns(Vec<String>)]
+    GetWhitelist {},
 }

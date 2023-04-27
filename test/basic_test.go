@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/strangelove-ventures/interchaintest/v4"
@@ -62,10 +63,13 @@ func TestContract(t *testing.T) {
 	require.NoError(t, err)
 
 	// User Setup
-	users := interchaintest.GetAndFundTestUsers(t, ctx, "default", int64(10_000_000), juno)
+	users := interchaintest.GetAndFundTestUsers(t, ctx, "default", int64(10_000_000), juno, juno)
 	user := users[0]
 	keyname := user.KeyName
 	uaddr := user.Bech32Address("juno")
+
+	user2 := users[1]
+	uaddr2 := user2.Bech32Address("juno")
 
 	// Contract Testing
 	codeId, err := juno.StoreContract(ctx, keyname, "../artifacts/journaling.wasm")
@@ -82,20 +86,31 @@ func TestContract(t *testing.T) {
 
 	// Execute on the chain and add an entry for a user
 	msg := fmt.Sprintf(`{"submit":{"entries":[{"date":"%s","title":"%s","repo_pr":"%s","notes":"%s"}]}}`, "Apr-26-2023", "My title here", "https://reece.sh", "note")
-	// msg := `{"testing":{"value":"here is a string"}}`
 	_, err = juno.ExecuteContract(ctx, keyname, contract, msg)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	queryMsg := QueryMsg{
-		GetEntries: &GetEntries{
-			Address: uaddr,
-		},
+	var jer JournalEntriesResponse
+	if err := juno.QueryContract(ctx, contract, QueryMsg{GetEntries: &GetEntries{Address: uaddr}}, &jer); err != nil {
+		t.Fatal(err)
 	}
-	var resp QueryResponse
-	juno.QueryContract(ctx, contract, queryMsg, &resp)
-	t.Log(resp.Data)
+	for k, v := range *jer.Data {
+		t.Log(k, v)
+	}
+
+	// Add whitelist for a new user uaddr2
+	msg = fmt.Sprintf(`{"whitelist":{"address":"%s"}}`, uaddr2)
+	_, err = juno.ExecuteContract(ctx, keyname, contract, msg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var resp WhitelistResponse
+	if err := juno.QueryContract(ctx, contract, QueryMsg{GetWhitelist: &struct{}{}}, &resp); err != nil {
+		t.Fatal(err)
+	}
+	t.Log("\nWhitelistResponse-> " + strings.Join(resp.Data, ","))
 
 	// Final Cleanup
 	t.Cleanup(func() {

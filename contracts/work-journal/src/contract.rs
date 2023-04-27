@@ -117,5 +117,12 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 
             to_binary(&entry)
         }
+
+        QueryMsg::GetWhitelist {  } => {
+            let state: State = STATE.load(deps.storage)?;
+            let whitelist = state.allowed_submitters;
+
+            to_binary(&whitelist)
+        }
     }
 }

@@ -9,8 +9,12 @@ type JournalEntry struct {
 
 type JournalEntries map[string]JournalEntry
 
-type QueryResponse struct {
+type JournalEntriesResponse struct {
 	Data *JournalEntries `json:"data"`
+}
+
+type WhitelistResponse struct {
+	Data []string `json:"data"`
 }
 
 type GetEntries struct {
@@ -18,5 +22,6 @@ type GetEntries struct {
 }
 
 type QueryMsg struct {
-	GetEntries *GetEntries `json:"get_entries,omitempty"`
+	GetEntries   *GetEntries `json:"get_entries,omitempty"`
+	GetWhitelist *struct{}   `json:"get_whitelist,omitempty"`
 }
