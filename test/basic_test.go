@@ -112,6 +112,19 @@ func TestContract(t *testing.T) {
 	}
 	t.Log("\nWhitelistResponse-> " + strings.Join(resp.Data, ","))
 
+	// == submit another entry ==
+	msg = fmt.Sprintf(`{"submit":{"entries":[{"date":"%s","title":"%s","repo_pr":"%s","notes":"%s"}]}}`, "Apr-26-2023", "2nd title", "github.com/2", "")
+	_, err = juno.ExecuteContract(ctx, keyname, contract, msg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := juno.QueryContract(ctx, contract, QueryMsg{GetEntries: &GetEntries{Address: uaddr}}, &jer); err != nil {
+		t.Fatal(err)
+	}
+	for k, v := range *jer.Data {
+		t.Log(k, v)
+	}
+
 	// Final Cleanup
 	t.Cleanup(func() {
 		_ = ic.Close()
