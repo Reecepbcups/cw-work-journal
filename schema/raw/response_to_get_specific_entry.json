@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JournalEntry",
+  "type": "object",
+  "required": [
+    "date",
+    "notes",
+    "repo_pr",
+    "title"
+  ],
+  "properties": {
+    "date": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "repo_pr": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

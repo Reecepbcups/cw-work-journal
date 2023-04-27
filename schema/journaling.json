@@ -1,0 +1,247 @@
+{
+  "contract_name": "journaling",
+  "contract_version": "0.0.1",
+  "idl_version": "1.0.0",
+  "instantiate": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "InstantiateMsg",
+    "type": "object",
+    "required": [
+      "allowed_submitters"
+    ],
+    "properties": {
+      "allowed_submitters": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "manager": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "execute": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ExecuteMsg",
+    "oneOf": [
+      {
+        "description": "Whitelist an address which can submit entries into their journal.",
+        "type": "object",
+        "required": [
+          "whitelist"
+        ],
+        "properties": {
+          "whitelist": {
+            "type": "object",
+            "required": [
+              "address"
+            ],
+            "properties": {
+              "address": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "description": "Remove an address from the whitelist. This will not remove any existing entries from the journal.",
+        "type": "object",
+        "required": [
+          "remove"
+        ],
+        "properties": {
+          "remove": {
+            "type": "object",
+            "required": [
+              "address"
+            ],
+            "properties": {
+              "address": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "description": "Submit a new entry into the journal.",
+        "type": "object",
+        "required": [
+          "submit"
+        ],
+        "properties": {
+          "submit": {
+            "type": "object",
+            "required": [
+              "entries"
+            ],
+            "properties": {
+              "entries": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/JournalEntry"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ],
+    "definitions": {
+      "JournalEntry": {
+        "type": "object",
+        "required": [
+          "date",
+          "notes",
+          "repo_pr",
+          "title"
+        ],
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "repo_pr": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "query": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "QueryMsg",
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "get_entries"
+        ],
+        "properties": {
+          "get_entries": {
+            "type": "object",
+            "required": [
+              "address"
+            ],
+            "properties": {
+              "address": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "get_specific_entry"
+        ],
+        "properties": {
+          "get_specific_entry": {
+            "type": "object",
+            "required": [
+              "address",
+              "id"
+            ],
+            "properties": {
+              "address": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer",
+                "format": "uint128",
+                "minimum": 0.0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "migrate": null,
+  "sudo": null,
+  "responses": {
+    "get_entries": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Array_of_JournalEntry",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/JournalEntry"
+      },
+      "definitions": {
+        "JournalEntry": {
+          "type": "object",
+          "required": [
+            "date",
+            "notes",
+            "repo_pr",
+            "title"
+          ],
+          "properties": {
+            "date": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            },
+            "repo_pr": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "get_specific_entry": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "JournalEntry",
+      "type": "object",
+      "required": [
+        "date",
+        "notes",
+        "repo_pr",
+        "title"
+      ],
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "repo_pr": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

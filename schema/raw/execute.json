@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "oneOf": [
+    {
+      "description": "Whitelist an address which can submit entries into their journal.",
+      "type": "object",
+      "required": [
+        "whitelist"
+      ],
+      "properties": {
+        "whitelist": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "Remove an address from the whitelist. This will not remove any existing entries from the journal.",
+      "type": "object",
+      "required": [
+        "remove"
+      ],
+      "properties": {
+        "remove": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "Submit a new entry into the journal.",
+      "type": "object",
+      "required": [
+        "submit"
+      ],
+      "properties": {
+        "submit": {
+          "type": "object",
+          "required": [
+            "entries"
+          ],
+          "properties": {
+            "entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/JournalEntry"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "definitions": {
+    "JournalEntry": {
+      "type": "object",
+      "required": [
+        "date",
+        "notes",
+        "repo_pr",
+        "title"
+      ],
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "repo_pr": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
