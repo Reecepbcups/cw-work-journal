@@ -49,7 +49,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3        
         with:
-          name: contracts
+          name: ${{ github.job }}-contracts
           retention-days: 1
           path: |
             artifacts
@@ -70,7 +70,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: contracts
+          name: ${{ github.job }}-contracts
           path: contracts
 
       - run: make ictest-basic
@@ -90,7 +90,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: contracts
+          name: ${{ github.job }}-contracts
           path: contracts
 
       - run: make ictest-whitelist
