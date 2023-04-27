@@ -14,12 +14,6 @@ jobs:
   e2e-setup:
     runs-on: ubuntu-latest
 
-    outputs:
-      branchTag: ${{ steps.meta.outputs.version }}
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       # Checkout
       - uses: actions/checkout@v3
@@ -47,11 +41,16 @@ jobs:
       
       - name: Build the artifact
         run: make compile
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        id: extract_branch
       
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3        
         with:
-          name: ${{needs.e2e-setup.outputs.branchTag}}-contracts
+          name: ${{ steps.extract_branch.outputs.branch }}-contracts
           retention-days: 1
           path: |
             artifacts
@@ -67,13 +66,18 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
         id: go
 
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        id: extract_branch
+
       - name: checkout chain
         uses: actions/checkout@v3        
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{needs.e2e-setup.outputs.branchTag}}-contracts
-          path: contracts
+          name: ${{ steps.extract_branch.outputs.branch }}-contracts
+          path: ${{ steps.extract_branch.outputs.branch }}-contracts
 
       - run: make ictest-basic
 
@@ -92,7 +96,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{needs.e2e-setup.outputs.branchTag}}-contracts
-          path: contracts
+          name: ${{ steps.extract_branch.outputs.branch }}-contracts
+          path: ${{ steps.extract_branch.outputs.branch }}-contracts
 
       - run: make ictest-whitelist
