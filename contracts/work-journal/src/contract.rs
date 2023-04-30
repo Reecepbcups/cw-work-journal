@@ -6,7 +6,7 @@ use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response,
 use cw2::set_contract_version;
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::msg::{ExecuteMsg, InstantiateMsg, JournalEntry, QueryMsg};
 use crate::state::{DataEntries, State, DATA_STATE, STATE};
 
 // version info for migration info
@@ -110,7 +110,13 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::GetEntries { address } => {
             let data_state: DataEntries = DATA_STATE.load(deps.storage)?;
-            let entries = data_state.entries.get(&address).unwrap();
+
+            let empty: BTreeMap<u128, JournalEntry> = BTreeMap::new();
+
+            let entries = match data_state.entries.get(&address) {
+                Some(entries) => entries,
+                None => &empty,
+            };
 
             to_binary(&entries)
         }
