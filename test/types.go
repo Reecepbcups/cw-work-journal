@@ -11,7 +11,7 @@ type QueryMsg struct {
 
 // Response Types (json is always 'data' from the chain return value)
 type JournalEntriesResponse struct {
-	Data *map[string]JournalEntry `json:"data"`
+	Data map[string]JournalEntry `json:"data"`
 }
 
 type WhitelistResponse struct {

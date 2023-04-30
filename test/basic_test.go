@@ -48,29 +48,10 @@ func TestContract(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// var jer JournalEntriesResponse
-	// if err := juno.QueryContract(ctx, contract, QueryMsg{GetEntries: &GetEntries{Address: uaddr}}, &jer); err != nil {
-	// 	t.Fatal(err)
-	// }
-	// for k, v := range *jer.Data {
-	// 	t.Log(k, v)
-	// }
-	res := GetAddressesEntries(juno, ctx, contract, uaddr, t)
-	for k, v := range *res.Data {
+	res := GetAddressesEntries(t, ctx, juno, contract, uaddr)
+	for k, v := range res.Data {
 		t.Log(k, v)
 	}
-
-	// Add whitelist for a new user uaddr2
-	// msg = fmt.Sprintf(`{"whitelist":{"address":"%s"}}`, uaddr2)
-	// _, err = juno.ExecuteContract(ctx, keyname, contract, msg)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// var resp WhitelistResponse
-	// if err := juno.QueryContract(ctx, contract, QueryMsg{GetWhitelist: &struct{}{}}, &resp); err != nil {
-	// 	t.Fatal(err)
-	// }
-	// t.Log("\nWhitelistResponse-> " + strings.Join(resp.Data, ","))
 
 	// == submit another entry ==
 	msg = fmt.Sprintf(`{"submit":{"entries":[{"date":"%s","title":"%s","repo_pr":"%s","notes":"%s"}]}}`, "Apr-26-2023", "2nd title", "github.com/2", "")
@@ -78,8 +59,8 @@ func TestContract(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res = GetAddressesEntries(juno, ctx, contract, uaddr, t)
-	for k, v := range *res.Data {
+	res = GetAddressesEntries(t, ctx, juno, contract, uaddr)
+	for k, v := range res.Data {
 		t.Log(k, v)
 	}
 
