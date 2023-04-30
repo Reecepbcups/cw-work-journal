@@ -70,8 +70,8 @@ func TestWhitelist(t *testing.T) {
 
 	// TODO: Remove contracts/work-journal/src/contract.rs:113:27 unwrap()
 	// ensure there are no keys in GetAddressesEntries
-	// t.Log(*GetAddressesEntries(juno, ctx, contract, uaddr2, t).Data)
-	// require.Equal(t, 0, len(*GetAddressesEntries(juno, ctx, contract, uaddr2, t).Data))
+	t.Log(*GetAddressesEntries(juno, ctx, contract, uaddr2, t).Data)
+	require.Equal(t, 0, len(*GetAddressesEntries(juno, ctx, contract, uaddr2, t).Data))
 
 	// Add whitelist for a new user uaddr2
 	msg = fmt.Sprintf(`{"whitelist":{"address":"%s"}}`, uaddr2)
