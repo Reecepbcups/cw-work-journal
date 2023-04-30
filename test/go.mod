@@ -3,6 +3,7 @@ module reece.sh/m/v2
 go 1.19
 
 require (
+	github.com/docker/docker v20.10.19+incompatible
 	github.com/strangelove-ventures/interchaintest/v4 v4.0.0-20230301185707-668fe0ea8377
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/zap v1.23.0
@@ -51,7 +52,6 @@ require (
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker v20.10.19+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1-0.20200219035652-afde56e7acac // indirect
