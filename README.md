@@ -1,5 +1,7 @@
 # CosmWasm Work Journal contact
 
+**I don't have time for this, archiving.**
+
 This is a contract that saves a work log of values for different approved users. The idea is similar to <https://work.reece.sh>.
 
 ```
